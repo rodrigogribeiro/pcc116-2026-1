@@ -1,0 +1,19 @@
+# Docker Compose configuration
+# Replicated from flake.nix: "Ambiente de desenvolvimento Haskell"
+#
+# Includes: GHC, Cabal, HLS, Pandoc, Fourmolu, HLint, Hoogle, ghcid, cabal-fmt
+# System libs: pkg-config, zlib
+
+services:
+  haskell-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: haskell-dev
+    stdin_open: true   # docker run -i
+    tty: true          # docker run -t
+    volumes:
+      - .:/workspace
+    working_dir: /workspace
+    environment:
+      - LD_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu

@@ -1,0 +1,112 @@
+cabal-version:      3.0
+name:               pcc116
+version:            0.1.0.0
+license:            BSD-3-Clause
+license-file:       LICENSE
+author:             Rodrigo Ribeiro
+maintainer:         rodrigogribeiro@gmail.com
+category:           Language
+build-type:         Simple
+extra-doc-files:    CHANGELOG.md
+
+common warnings
+    ghc-options: -Wall
+
+library
+    import:           warnings
+    exposed-modules:
+      , Untyped.Syntax.Named
+      , Untyped.Syntax.DeBruijn
+      , Untyped.Parser.NamedParser
+      , Untyped.Parser.DeBruijnParser
+      , Untyped.Pretty.Named
+      , Untyped.Pretty.DeBruijn
+      , Untyped.Interpreter
+      , Typed.Syntax.Type
+      , Typed.Syntax.Named
+      , Typed.Syntax.DeBruijn
+      , Typed.Parser.TypeParser
+      , Typed.Parser.NamedParser
+      , Typed.Parser.DeBruijnParser
+      , Typed.Pretty.Type
+      , Typed.Pretty.Named
+      , Typed.Pretty.DeBruijn
+      , Typed.Typechecker
+      , Typed.Interpreter
+      , Typed.Tactic
+      , ProofSearch.Syntax.Formula
+      , ProofSearch.Pretty.ProofTree
+      , ProofSearch.Parser.SequentParser
+      , ProofSearch.Rules
+      , ProofSearch.Search
+      , CoC.Syntax.Term
+      , CoC.Subst
+      , CoC.Reduce
+      , CoC.Check
+      , CoC.Encode
+      , CoC.Pretty.Term
+      , CoC.Parser.TermParser
+      , CoC.Tactic
+    build-depends:
+        base          ^>=4.20.2.0
+      , megaparsec    >=9.0
+      , prettyprinter >=1.7
+      , containers    >=0.6
+    hs-source-dirs:   src
+    default-language: Haskell2010
+
+executable untyped
+    import:           warnings
+    main-is:          Untyped.hs
+    build-depends:
+        base          ^>=4.20.2.0
+      , pcc116
+    hs-source-dirs:   src/Untyped
+    default-language: Haskell2010
+
+executable typed
+    import:           warnings
+    main-is:          Typed.hs
+    build-depends:
+        base          ^>=4.20.2.0
+      , pcc116
+    hs-source-dirs:   src/Typed
+    default-language: Haskell2010
+
+executable proof-search
+    import:           warnings
+    main-is:          ProofSearch.hs
+    build-depends:
+        base          ^>=4.20.2.0
+      , pcc116
+    hs-source-dirs:   src/ProofSearch
+    default-language: Haskell2010
+
+executable coc
+    import:           warnings
+    main-is:          CoC.hs
+    build-depends:
+        base          ^>=4.20.2.0
+      , pcc116
+      , megaparsec    >=9.0
+    hs-source-dirs:   src/CoC
+    default-language: Haskell2010
+
+executable pcc116
+    import:           warnings
+    main-is:          Main.hs
+    build-depends:
+        base ^>=4.20.2.0
+      , pcc116
+    hs-source-dirs:   app
+    default-language: Haskell2010
+
+test-suite pcc116-test
+    import:           warnings
+    default-language: Haskell2010
+    type:             exitcode-stdio-1.0
+    hs-source-dirs:   test
+    main-is:          Main.hs
+    build-depends:
+        base ^>=4.20.2.0
+      , pcc116

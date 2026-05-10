@@ -1,0 +1,250 @@
+\documentclass[12pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[brazil]{babel}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{proof}          % \infer
+\usepackage{bussproofs}     % árvores de prova estilo Gentzen
+\usepackage{enumitem}
+\usepackage{geometry}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{mathtools}
+
+\geometry{margin=2.5cm}
+
+% ── código Haskell ────────────────────────────────────────────────────────────
+\lstdefinelanguage{Haskell}{
+  keywords={data,type,where,let,in,case,of,do,module,import,if,then,else,
+  deriving,newtype,class,instance,Right,Left,Just,Nothing},
+  keywordstyle=\bfseries\color{blue!70!black},
+  comment=[l]{--},
+  commentstyle=\itshape\color{gray},
+  stringstyle=\color{orange!80!black},
+  basicstyle=\ttfamily\small,
+  breaklines=true,
+  showstringspaces=false
+}
+\lstset{language=Haskell}
+
+% ── macros lógicas ────────────────────────────────────────────────────────────
+\newcommand{\seq}{\;\vdash\;}
+\newcommand{\seqc}[2]{#1\vdash #2}
+\newcommand{\arr}{\supset}
+\newcommand{\lc}{\lambda}
+\newcommand{\FV}{\mathsf{FV}}
+\newcommand{\Red}{\mathbf{Red}}
+
+% ── contadores ────────────────────────────────────────────────────────────────
+\newcounter{exercicio}
+\newenvironment{exercicio}[1][]{%
+  \refstepcounter{exercicio}%
+  \medskip\noindent\textbf{Exercício \theexercicio%
+  \ifx\relax#1\relax\else\ (#1)\fi.}\enspace\ignorespaces
+}{%
+  \par\smallskip
+}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\title{\textbf{Lógica Aplicada à Computação}\\[4pt]
+\large Lista de Exercícios 1\\[2pt]}
+\author{Prof.\ Rodrigo Ribeiro}
+\date{}
+
+\begin{document}
+\maketitle
+\thispagestyle{empty}
+
+\bigskip
+\noindent\textit{Instruções gerais:}
+\begin{itemize}[leftmargin=1.5em]
+  \item Apresente suas respostas de forma clara, identificando as regras de
+    inferência utilizadas.
+  \item Em exercícios de redução, mostre cada passo.
+  \item Entrega deverá ser feita exclusivamente pelo Moodle.
+  \item Sua solução deverá ser submetida como um único arquivo PDF,
+    produzido utilizando~\LaTeX.
+\end{itemize}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section*{Parte I — Lógica Proposicional: Dedução Natural}
+% ─────────────────────────────────────────────────────────────────────────────
+
+\begin{exercicio}
+  Construa derivações em dedução natural para cada um dos sequentes abaixo.
+  Identifique explicitamente cada regra aplicada.
+  \begin{enumerate}[label=(\alph*)]
+    \item $\seqc{}{A \arr (B \arr A)}$
+    \item $\seqc{A \arr B,\; B \arr C}{A \arr C}$
+    \item $\seqc{}{(A \land B) \arr (B \land A)}$
+    \item $\seqc{}{A \arr (A \lor B)}$
+    \item $\seqc{}{(A \lor B) \arr (\neg A \arr B)}$
+    \item $\seqc{\neg A \land \neg B}{\neg(A \lor B)}$
+  \end{enumerate}
+\end{exercicio}
+
+\section*{Parte II — Lógica Proposicional: Cálculo de Sequentes}
+
+\begin{exercicio}
+  Utilize o sistema de proof search (Dyckhoff, 1992) para construir
+  provas dos seguintes
+  sequentes ou demonstre que eles \emph{não} são demonstráveis na lógica
+  intuicionista.  Em cada caso, exiba a árvore de prova completa ou a indicação
+  de falha.
+  \begin{enumerate}[label=(\alph*)]
+    \item $\seq P \arr P$
+    \item $\seq (P \land Q) \arr (Q \land P)$
+    \item $\seq (P \arr Q \arr R) \arr (P \arr Q) \arr P \arr R$
+      \hfill\textit{(combinador S)}
+    \item $P \arr Q,\; P \seq Q$
+    \item $\seq P \lor \neg P$ \hfill\textit{(terceiro excluído)}
+    \item $\seq \neg\neg P \arr P$ \hfill\textit{(dupla negação)}
+  \end{enumerate}
+\end{exercicio}
+
+\section*{Parte III — Lambda Cálculo Não Tipado}
+
+\begin{exercicio}[Notação De Bruijn]
+  Converta os seguintes termos nomeados para a notação De Bruijn.
+  \begin{enumerate}[label=(\alph*)]
+    \item $\lc x.\; \lc y.\; x$
+    \item $\lc x.\; \lc y.\; y$
+    \item $\lc f.\; \lc x.\; f\;(f\;(f\;x))$
+    \item $(\lc x.\; x\; x)\; (\lc x.\; x\; x)$
+      \hfill\textit{(combinador $\Omega$)}
+    \item $\lc x.\; \lc y.\; \lc z.\; x\;z\;(y\;z)$
+      \hfill\textit{(combinador S)}
+  \end{enumerate}
+\end{exercicio}
+
+\begin{exercicio}[Beta-redução]
+  Reduza os termos abaixo à forma normal (se existir), mostrando cada passo.
+  Indique qual estratégia de avaliação foi utilizada (\emph{call-by-value} ou
+  \emph{normal-order}).
+  \begin{enumerate}[label=(\alph*)]
+    \item $(\lc x.\; x)\; (\lc y.\; y)$
+    \item $(\lc x.\; \lc y.\; x)\; M\; N$ para termos quaisquer $M$, $N$.
+    \item $(\lc x.\; x\; x)\; (\lc y.\; y)$
+    \item $\mathbf{succ}\;\mathbf{2}$, onde
+      $\mathbf{succ} = \lc n.\lc f.\lc x.\; f\;(n\;f\;x)$ e
+      $\mathbf{2} = \lc f.\lc x.\; f\;(f\;x)$.
+    \item $\mathbf{plus}\;\mathbf{1}\;\mathbf{2}$, onde
+      $\mathbf{plus} = \lc m.\lc n.\lc f.\lc x.\; m\;f\;(n\;f\;x)$.
+  \end{enumerate}
+\end{exercicio}
+
+\begin{exercicio}[Codificações de Church]
+  Utilizando as codificações de Church para booleanos e números naturais,
+  defina os seguintes termos e verifique a corretude através de reduções.
+  \begin{enumerate}[label=(\alph*)]
+    \item Defina $\mathbf{xor}$ e mostre que
+      $\mathbf{xor}\;\mathbf{true}\;\mathbf{false} \to^* \mathbf{true}$.
+    \item Defina $\mathbf{mult}$ (multiplicação) e mostre que
+      $\mathbf{mult}\;\mathbf{2}\;\mathbf{3} \to^* \mathbf{6}$.
+    \item Defina um operador de par $\mathbf{pair}$, $\mathbf{fst}$ e
+      $\mathbf{snd}$ e verifique que
+      $\mathbf{fst}\;(\mathbf{pair}\;M\;N) \to^* M$.
+  \end{enumerate}
+\end{exercicio}
+
+\begin{exercicio}[Shift e substituição em De Bruijn]
+  Seja o operador $\uparrow^d_c$ de \emph{shift} e a substituição
+  $[j \mapsto s]$ na notação De Bruijn.
+  \begin{enumerate}[label=(\alph*)]
+    \item Calcule $\uparrow^1_0\;(\lc.\;\lc.\;1\;0)$.
+    \item Calcule $[0 \mapsto \lc.\;0]\;(\lc.\;1\;0)$.
+    \item Realize a beta-redução $(\lc.\;\lc.\;1\;0)\;(\lc.\;0)$ usando a
+      fórmula
+      $(\lc.\;t_1)\;t_2 \longrightarrow
+      \uparrow^{-1}_0([0\mapsto\uparrow^1_0 t_2]\,t_1)$
+      e verifique o resultado convertendo para a notação nomeada.
+  \end{enumerate}
+\end{exercicio}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section*{Parte IV — Lambda Cálculo Tipado Simples e Curry-Howard}
+% ─────────────────────────────────────────────────────────────────────────────
+
+\begin{exercicio}[Derivações de tipo]
+  Para cada termo abaixo, construa a derivação de tipo no STLC ou explique por
+  que o termo não é tipável.
+  \begin{enumerate}[label=(\alph*)]
+    \item $\lc x{:}A.\; x$
+    \item $\lc x{:}A.\; \lc y{:}B.\; x$
+    \item $\lc f{:}A\to B.\; \lc g{:}B\to C.\; \lc x{:}A.\; g\;(f\;x)$
+    \item $\lc h{:}A \times B.\; (\mathbf{snd}\;h,\;\mathbf{fst}\;h)$
+    \item $\lc p{:}A \times B.\; \lc q{:}C.\;
+      \mathbf{inl}\;(\mathbf{fst}\;p) \;\mathbf{as}\; A + C$
+    \item $\lc x{:}\bot.\; \mathbf{absurd}\;x \;\mathbf{as}\; A$
+  \end{enumerate}
+\end{exercicio}
+
+\begin{exercicio}[Isomorfismo de Curry-Howard]
+  Para cada proposição da lógica proposicional intuicionista, escreva o tipo
+  correspondente no STLC e exiba um habitante (isto é, um termo fechado
+  bem-tipado nesse tipo).  Se a proposição \emph{não} for intuicionisticamente
+  válida, argumente por que o tipo não tem habitante.
+  \begin{enumerate}[label=(\alph*)]
+    \item $A \arr A$
+    \item $(A \arr B) \arr (B \arr C) \arr A \arr C$
+    \item $A \arr A \lor B$
+    \item $A \land B \arr A$
+    \item $(A \arr B \arr C) \arr (A \arr B) \arr A \arr C$
+      \hfill\textit{(combinador S tipado)}
+    \item $A \lor \neg A$ \hfill\textit{(terceiro excluído)}
+    \item $\neg\neg A \arr A$ \hfill\textit{(eliminação da dupla negação)}
+  \end{enumerate}
+\end{exercicio}
+
+\section*{Parte V — Lógica de Predicados}
+
+\begin{exercicio}[Sintaxe e variáveis]
+  Seja $\Sigma = \{0 : 0,\; s : 1,\; + : 2\}$ e
+  $\mathcal{P} = \{\leq : 2,\; \text{Par} : 1\}$.
+  \begin{enumerate}[label=(\alph*)]
+    \item Quais dos seguintes são termos bem formados sobre $\Sigma$?
+      \begin{enumerate}[label=(\roman*)]
+        \item $s(0)$
+        \item $+(x, s(0))$
+        \item $s(s(+))$
+      \end{enumerate}
+    \item Calcule $\FV(\varphi)$ para as fórmulas:
+      \begin{enumerate}[label=(\roman*)]
+        \item $\forall x.\; \exists y.\; x + y = 0$
+        \item $(\exists y.\; x + x = y) \lor (\forall x.\; x = z)$
+      \end{enumerate}
+    \item Calcule $[x \mapsto s(z)]\,(\exists y.\; x + y = 0)$.  Há captura
+      de variável?  Justifique.
+  \end{enumerate}
+\end{exercicio}
+
+\begin{exercicio}[Dedução natural com quantificadores]
+  Construa derivações em dedução natural para os sequentes abaixo.
+  \begin{enumerate}[label=(\alph*)]
+    \item $\seqc{}{\forall x.\; P(x) \arr P(x)}$
+    \item $\seqc{\forall x.\; P(x) \arr Q(x),\;\forall x.\;
+      P(x)}{\forall x.\; Q(x)}$
+    \item $\seqc{\forall x.\; P(x) \land Q(x)}{\forall x.\; P(x)}$
+    \item $\seqc{\exists x.\; P(x) \land Q(x)}{\exists x.\; P(x)}$
+    \item $\seqc{}{\forall x.\; \neg P(x) \arr \neg\exists x.\; P(x)}$
+      \hfill\textit{(do slide da aula 06)}
+  \end{enumerate}
+\end{exercicio}
+
+\begin{exercicio}[Semântica]
+  Considere a estrutura $\mathcal{M} = (\mathbb{N}, \{+, \cdot, 0, 1\},
+  \{\leq\})$.
+  \begin{enumerate}[label=(\alph*)]
+    \item Determine se cada fórmula abaixo é satisfeita em $\mathcal{M}$:
+      \begin{enumerate}[label=(\roman*)]
+        \item $\forall x.\; \exists y.\; x + y = 0$
+        \item $\exists x.\; \forall y.\; x \leq y$
+        \item $\forall x.\; \forall y.\; x \leq y \lor y \leq x$
+      \end{enumerate}
+    \item Para cada fórmula falsa em (a), exiba uma estrutura em que ela seja
+      verdadeira.
+  \end{enumerate}
+\end{exercicio}
+\end{document}

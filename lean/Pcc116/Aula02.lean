@@ -24,28 +24,3 @@ theorem mul_assoc (l m n : ℕ) :
 
 theorem mul_add (l m n : ℕ) :
     mul l (add m n) = add (mul l m) (mul l n) := sorry
-
-def reverse {α : Type} : List α → List α
-  | []      => []
-  | x :: xs => reverse xs ++ [x]
-
-theorem reverse_reverse {α : Type} (xs : List α) :
-    reverse (reverse xs) = xs := sorry
-
-
-inductive AExp : Type where
-  | num : ℤ → AExp
-  | var : String → AExp
-  | add : AExp → AExp → AExp
-  | mul : AExp → AExp → AExp
-
-def eval (env : String → ℤ) : AExp → ℤ
-  | AExp.num i      => i
-  | AExp.var x      => env x
-  | AExp.add e₁ e₂  => eval env e₁ + eval env e₂
-  | AExp.mul e₁ e₂  => eval env e₁ * eval env e₂
-
-def simplify : AExp → AExp := sorry 
-
-
-

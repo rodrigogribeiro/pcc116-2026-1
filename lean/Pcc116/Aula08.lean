@@ -5,10 +5,10 @@ set_option autoImplicit false
 set_option tactic.hygienic false
 set_option linter.hashCommand false
 
-/-! # Programação com Tipos Dependentes -/
+/- Programação com Tipos Dependentes -/
 
 
-/-! ## Subtipos e o Predecessor Seguro -/
+/- Subtipos e o Predecessor Seguro -/
 
 
 /-- Predecessor com pré-condição -/
@@ -74,7 +74,7 @@ theorem eject_inject {A : Type} (l : List A) : eject (inject l) = l := by
 #eval ihead (.icons 1 (.icons 2 (.icons 3 .inil)))   -- 1
 #eval eject (iapp (.icons 1 (.icons 2 .inil)) (.icons 3 .inil))  -- [1, 2, 3]
 
-/-! Índices Seguros -/
+/- Índices Seguros -/
 
 inductive Idx : ℕ → Type where
   | zero {n : ℕ} : Idx (n + 1)
@@ -143,7 +143,7 @@ def fhget {α : Type} {B : α → Type} {t : α} :
   | _ :: _, fls, Sum.inl ⟨rfl⟩  => fls.1
   | _ :: _, fls, Sum.inr idx     => fhget fls.2 idx
 
-/-! ### Exemplo: registros heterogêneos -/
+/- Exemplo: registros heterogêneos -/
 
 inductive TipoBase where | TNat | TBool | TString deriving Repr
 

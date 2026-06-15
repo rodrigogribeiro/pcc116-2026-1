@@ -20,7 +20,10 @@ def eval : Expr → ℕ
   | .add e1 e2 => eval e1 + eval e2
   | .mul e1 e2 => eval e1 * eval e2
 
-#eval eval (.mul (.add (.num 3) (.num 4)) (.num 2))   -- 14
+#eval eval (.mul (.add (.num 3) (.num 4)) 
+                 (.num 2))   
+
+-- 14
 
 /- Semântica Big-Step
 
@@ -41,24 +44,44 @@ def eval : Expr → ℕ
 -/
 
 inductive BigStep : Expr → ℕ → Prop where
-  | num (n : ℕ)                     : BigStep (.num n) n
-  | add {e1 e2 : Expr} {n1 n2 : ℕ} : BigStep e1 n1 → BigStep e2 n2
-                                    → BigStep (.add e1 e2) (n1 + n2)
-  | mul {e1 e2 : Expr} {n1 n2 : ℕ} : BigStep e1 n1 → BigStep e2 n2
-                                    → BigStep (.mul e1 e2) (n1 * n2)
+  | num (n : ℕ) : BigStep (.num n) n
+  | add {e1 e2 : Expr} {n1 n2 : ℕ} 
+    : BigStep e1 n1 → 
+      BigStep e2 n2
+    ---------------------------------
+    → BigStep (.add e1 e2) (n1 + n2)
+  | mul {e1 e2 : Expr} {n1 n2 : ℕ} 
+    : BigStep e1 n1 → 
+      BigStep e2 n2
+    --------------------------------
+    → BigStep (.mul e1 e2) (n1 * n2)
 
 infix:50 " ⇓ " => BigStep
 
--- Exemplo: (3 + 4) * 2 ⇓ 14
-example : .mul (.add (.num 3) (.num 4)) (.num 2) ⇓ 14 :=
-  .mul (.add (.num 3) (.num 4)) (.num 2)
+-- Exemplo: (1 + 2) * 3 ⇓ 9
+example : .mul (.add (.num 1) (.num 2)) (.num 3) ⇓ 9
+  := by 
+      have Heq : 9 = 3 * 3 := by omega 
+      rw [Heq] 
+      apply BigStep.mul
+      · 
+        have Heq1 : 3 = 1 + 2 := by omega 
+        rw [Heq1] 
+        apply BigStep.add
+        · 
+          apply BigStep.num 
+        · 
+          apply BigStep.num
+      · 
+        apply BigStep.num 
 
 /-! ### Conexão com o avaliador -/
 
 theorem eval_bigStep (e : Expr) : e ⇓ eval e := by
   induction e with
   | num n          => constructor 
-  | add _ _ IH1 IH2 => constructor <;> assumption 
+  | add e1 e2 IH1 IH2 => 
+    constructor <;> assumption
   | mul _ _ IH1 IH2 => constructor <;> assumption 
 
 theorem bigStep_eval 

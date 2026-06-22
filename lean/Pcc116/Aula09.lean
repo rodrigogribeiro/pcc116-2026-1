@@ -148,15 +148,20 @@ inductive SmallStep : Expr → Expr → Prop where
 infix:50 " →₁ " => SmallStep
 
 -- Exemplo: (3+4)*2 reduz em dois passos
-example : .mul (.add (.num 3) (.num 4)) (.num 2) →₁ .mul (.num 7) (.num 2) :=
-  .mulL (.addNum 3 4)
+example : .mul (.add (.num 1) (.num 2)) (.num 3) →₁ 
+          .mul (.num 3) (.num 3) := by 
+  apply SmallStep.mulL
+  apply SmallStep.addNum
+
 
 example : .mul (.num 7) (.num 2) →₁ .num 14 :=
   .mulNum 7 2
 
 /- Valores não reduzem -/
 
-lemma num_irreducible {n : ℕ} {e : Expr} : ¬ (.num n →₁ e) := by intros H ; cases H
+lemma num_irreducible {n : ℕ} {e : Expr} : ¬ (.num n →₁ e) := by
+     intros H 
+     cases H
 
 /- Determinismo da semântica small-step -/
 
@@ -167,7 +172,10 @@ theorem smallStep_det {e e1 : Expr} (h1 : e →₁ e1) :
       intro e2 h2
       cases h2 with
       | addL hs2 => rw [IH hs2]
-      | addR hs2 => exact absurd hs1 num_irreducible
+      | addR hs2 => 
+          have Hcontra : ¬ (Expr.num n1 →₁ e1') := by 
+            apply num_irreducible 
+          contradiction 
       | addNum   => exact absurd hs1 num_irreducible
   | addR hs1 IH =>
       intro e2 h2
@@ -253,7 +261,8 @@ lemma multiStep_mulR {n1 : ℕ}
 
 /- Big-Step implica Multi-Step -/
 
-theorem bigStep_to_multiStep {e : Expr} {n : ℕ} (h : e ⇓ n) : e →* .num n := by
+theorem bigStep_to_multiStep {e : Expr} {n : ℕ} 
+      (h : e ⇓ n) : e →* .num n := by
   induction h with
   | num n => exact .refl
   | add h1 h2 IH1 IH2 =>
